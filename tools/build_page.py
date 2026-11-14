@@ -84,7 +84,6 @@ footer{{text-align:center;font-size:11.5px;color:#93a0af;padding:18px}}
 <main>
 {sec_html}
 <div class="card sig">—— 全部装齐 ✅ 时间：＿＿＿＿＿＿ ——</div>
-<div class="card chlog"><strong>📝 最近更新</strong><br>{chlog_html}</div>
 </main>
 <footer>Robin 专用 · noindex ｜ 数据源：海外物品清单 md（龙虾文件夹）｜ 由总管家文亮生成</footer>
 <script>
