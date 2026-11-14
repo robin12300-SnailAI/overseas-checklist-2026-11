@@ -55,30 +55,35 @@ page = f"""<!DOCTYPE html>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>海外物品清单 · 2026 越南香港国内 · {ver}</title>
+<script>(function(){{try{{var t=localStorage.getItem('theme-pref');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}}catch(e){{}}}})();</script>
 <style>
-:root{{--ink:#1c2430;--bg:#eeede9;--card:#f6f5f1;--accent:#0a7d4f;--warnb:#b45309;--moneyb:#7c3aed;--line:#dcdad3}}
+:root{{color-scheme:light;--ink:#1c2430;--bg:#ffffff;--card:#f7f8fa;--accent:#0a7d4f;--warnb:#b45309;--moneyb:#7c3aed;--line:#e3e6ea;--head:#0a7d4f;--headink:#ffffff;--cnt:#e0ece5;--cntink:#0a7d4f;--note:#eef0f3;--noteink:#5a6572;--done:#8b8f96;--badge:#64748b;--badgeink:#ffffff;--foot:#7d8590;--shadow:rgba(16,32,64,.08);--fill:#ffe27a}}
+@media (prefers-color-scheme:dark){{:root:not([data-theme=light]){{color-scheme:dark;--ink:#e6e8eb;--bg:#0f1113;--card:#1a1d21;--accent:#4ade9c;--warnb:#fbbf24;--moneyb:#c4b5fd;--line:#2c3138;--head:#14291f;--headink:#e6e8eb;--cnt:#23382e;--cntink:#7ff0b8;--note:#262a30;--noteink:#aab2bd;--done:#6b7280;--badge:#3b4452;--badgeink:#e6e8eb;--foot:#7d8590;--shadow:rgba(0,0,0,.5);--fill:#4ade9c}}}}
+:root[data-theme=dark]{{color-scheme:dark;--ink:#e6e8eb;--bg:#0f1113;--card:#1a1d21;--accent:#4ade9c;--warnb:#fbbf24;--moneyb:#c4b5fd;--line:#2c3138;--head:#14291f;--headink:#e6e8eb;--cnt:#23382e;--cntink:#7ff0b8;--note:#262a30;--noteink:#aab2bd;--done:#6b7280;--badge:#3b4452;--badgeink:#e6e8eb;--foot:#7d8590;--shadow:rgba(0,0,0,.5);--fill:#4ade9c}}
 *{{box-sizing:border-box}}body{{margin:0;font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}}
-header{{position:sticky;top:0;z-index:9;background:var(--accent);color:#fff;padding:14px 18px;box-shadow:0 2px 8px rgba(0,0,0,.15)}}
+header{{position:sticky;top:0;z-index:9;background:var(--head);color:var(--headink);padding:14px 18px;box-shadow:0 2px 8px rgba(0,0,0,.15)}}
 header h1{{margin:0;font-size:19px}}header .meta{{font-size:12.5px;opacity:.92;margin-top:3px}}
 #bar{{height:6px;background:rgba(255,255,255,.3);border-radius:3px;margin-top:8px;overflow:hidden}}
-#barfill{{height:100%;width:0;background:#ffe27a;transition:width .3s}}
+#barfill{{height:100%;width:0;background:var(--fill);transition:width .3s}}
 main{{max-width:860px;margin:0 auto;padding:14px}}
-.card{{background:var(--card);border-radius:14px;padding:16px 18px;margin:14px 0;box-shadow:0 1px 4px rgba(16,32,64,.08);border:1px solid var(--line)}}
+.card{{background:var(--card);border-radius:14px;padding:16px 18px;margin:14px 0;box-shadow:0 1px 4px var(--shadow);border:1px solid var(--line)}}
 h2{{font-size:16.5px;margin:0 0 8px;color:var(--accent);border-bottom:2px solid var(--line);padding-bottom:6px}}
-.cnt{{font-size:12px;background:#e0ece5;color:var(--accent);border-radius:10px;padding:2px 9px;vertical-align:2px;font-weight:600}}
+.cnt{{font-size:12px;background:var(--cnt);color:var(--cntink);border-radius:10px;padding:2px 9px;vertical-align:2px;font-weight:600}}
 .item{{display:flex;gap:10px;align-items:flex-start;padding:7px 4px;border-bottom:1px dashed var(--line);cursor:pointer;font-size:14.5px}}
 .item:last-child{{border-bottom:none}}
 .item input{{width:19px;height:19px;margin-top:2px;accent-color:var(--accent);flex:none}}
-.item:has(input:checked) span{{color:#8b8f96;text-decoration:line-through}}
-.note{{font-size:13px;color:#5a6572;background:#e8e7e2;border-radius:8px;padding:8px 12px;margin:6px 0}}
+.item:has(input:checked) span{{color:var(--done);text-decoration:line-through}}
+.note{{font-size:13px;color:var(--noteink);background:var(--note);border-radius:8px;padding:8px 12px;margin:6px 0}}
 .warn{{color:var(--warnb);font-weight:700}}.money{{color:var(--moneyb);font-weight:700}}
 .sig{{text-align:center;font-size:16px;font-weight:700;color:var(--accent);padding:18px}}
-footer{{text-align:center;font-size:11.5px;color:#7d786f;padding:18px}}
-.code{{display:inline-block;min-width:30px;margin-right:6px;font-size:12px;color:#fff;background:#64748b;border-radius:5px;padding:0 5px;text-align:center}}
-.chlog{{font-size:12px;color:#5a6572}}
-@media print{{header{{position:static}}#bar{{display:none}}.item:has(input:checked) span{{text-decoration:none}}}}
+footer{{text-align:center;font-size:11.5px;color:var(--foot);padding:18px}}
+.code{{display:inline-block;min-width:30px;margin-right:6px;font-size:12px;color:var(--badgeink);background:var(--badge);border-radius:5px;padding:0 5px;text-align:center}}
+.chlog{{font-size:12px;color:var(--noteink)}}
+#theme{{position:absolute;top:10px;right:12px;font-size:20px;line-height:1;padding:7px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.2);color:var(--headink);cursor:pointer;-webkit-appearance:none}}
+header h1{{padding-right:56px}}
+@media print{{#theme{{display:none}}header{{position:static}}#bar{{display:none}}.item:has(input:checked) span{{text-decoration:none}}}}
 </style></head><body>
-<header><h1>🧳 海外物品清单 · 越南—香港—中国 13 天</h1>
+<header><button id="theme" type="button" aria-label="切换白天/夜间模式" title="切换白天/夜间模式">🌙</button><h1>🧳 海外物品清单 · 越南—香港—中国 13 天</h1>
 <div class="meta">📌 {ver} ｜ 刷新 {vtime}（Sydney）｜ 勾选自动保存在本机 · 改 md 或让文亮改 → 版本号会升级</div>
 <div id="bar"><div id="barfill"></div></div></header>
 <main>
@@ -96,6 +101,11 @@ function updateCnt(card){{const cbs=card.querySelectorAll('input');const n=[...c
 function updateAll(){{let t=0,d=0;document.querySelectorAll('.card').forEach(updateCnt);document.querySelectorAll('input').forEach(c=>{{t++;if(c.checked)d++}});
 document.getElementById('barfill').style.width=(t?100*d/t:0)+'%';}}
 updateAll();
+(function(){{const b=document.getElementById('theme'),mq=window.matchMedia('(prefers-color-scheme: dark)');
+function cur(){{const t=document.documentElement.getAttribute('data-theme');return t||(mq.matches?'dark':'light')}}
+function show(){{b.textContent=cur()==='dark'?'☀️':'🌙';b.title=cur()==='dark'?'切换到白天模式':'切换到夜间模式'}}
+b.addEventListener('click',()=>{{const n=cur()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);try{{localStorage.setItem('theme-pref',n)}}catch(e){{}}show()}});
+if(mq.addEventListener)mq.addEventListener('change',show);show();}})();
 </script></body></html>"""
 OUT.write_text(page, encoding="utf-8")
 print("WROTE", OUT, len(page), "bytes,", len(sections), "sections,", sum(len(s['items']) for s in sections), "items")
