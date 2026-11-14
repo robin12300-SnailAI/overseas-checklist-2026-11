@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import hashlib, html, re, pathlib
 
-SRC = pathlib.Path.home() / "龙虾文件夹/海外物品清单_2026越南香港国内_Robin.md"
+SRC = pathlib.Path.home() / "龙虾文件夹/总管家专家团/清单/海外物品清单_2026越南香港国内_Robin.md"
 OUT = pathlib.Path(__file__).resolve().parent.parent / "index.html"
 md = SRC.read_text(encoding="utf-8")
 
