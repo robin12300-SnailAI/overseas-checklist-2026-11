@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
-import hashlib, html, re, pathlib
+import hashlib, html, os, re, pathlib
 
-SRC = pathlib.Path.home() / "龙虾文件夹/总管家专家团/清单/海外物品清单_2026越南香港国内_Robin.md"
+# MD 正本路径：默认 mini 路径；Mac Pro 等机器用环境变量 CHECKLIST_MD 指向各自正本
+SRC = pathlib.Path(os.environ.get("CHECKLIST_MD") or (
+    pathlib.Path.home() / "龙虾文件夹/总管家专家团/清单/海外物品清单_2026越南香港国内_Robin.md"))
 OUT = pathlib.Path(__file__).resolve().parent.parent / "index.html"
 md = SRC.read_text(encoding="utf-8")
 
@@ -126,9 +128,12 @@ function show(){{b.textContent=cur()==='dark'?'☀️':'🌙';b.title=cur()==='d
 b.addEventListener('click',()=>{{const n=cur()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);try{{localStorage.setItem('theme-pref',n)}}catch(e){{}}show()}});
 if(mq.addEventListener)mq.addEventListener('change',show);show();}})();
 </script></body></html>"""
-# 网页打码（罗斌 2026-11-15 定）：证件号只在网页输出打码，MD 正本保留完整号码
-MASKS = [("RA******9", "RA******9"), ("1095****/EV", "1095****/EV")]
-for full, masked in MASKS:
-    page = page.replace(full, masked)
+# 网页打码（罗斌 2026-11-15 定）：证件号只在网页输出打码，MD 正本保留完整号码。
+# 按格式匹配，源码中不出现任何具体号码。护照：2 字母 + 7 位数字 → 前2位 + ****** + 末位；
+# eVisa：9 位数字 + /EV → 前4位 + **** + /EV。用 (?<!…)/(?!…) 代替 \b，避免中文紧贴时漏匹配。
+PASSPORT_RE = re.compile(r"(?<![A-Za-z0-9])([A-Z]{2})\d{6}(\d)(?![A-Za-z0-9])")
+EVISA_RE = re.compile(r"(?<![0-9])(\d{4})\d{5}(/EV)(?![A-Za-z0-9])")
+page = PASSPORT_RE.sub(lambda m: m.group(1) + "******" + m.group(2), page)
+page = EVISA_RE.sub(lambda m: m.group(1) + "****" + m.group(2), page)
 OUT.write_text(page, encoding="utf-8")
 print("WROTE", OUT, len(page), "bytes,", len(sections), "sections,", sum(len(s['items']) for s in sections), "items")
