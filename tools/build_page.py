@@ -12,6 +12,7 @@ ver, vtime = (m.group(1), m.group(2).strip()) if m else ("v1.7", "2026-11-14")
 def inline(s):
     s = html.escape(s)
     s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
+    s = re.sub(r"~~(.+?)~~", r"<del>\1</del>", s)
     s = s.replace("⚠️", '<span class="warn">⚠️</span>').replace("💰", '<span class="money">💰</span>')
     return s
 
