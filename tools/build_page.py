@@ -24,6 +24,8 @@ for ln in lines:
         cur = {"title": ln.lstrip("#").strip(), "items": [], "note": None}
         sections.append(cur); continue
     if cur is None: continue
+    if ln.startswith("|"):
+        cur.setdefault("tables", []).append(ln); continue
     mi = re.match(r"- \[( |x|X)\] (?:\*\*([A-Z]\d+)\*\* )?(.*)", ln)
     if mi:
         code = mi.group(2) or hashlib.md5(mi.group(3).encode()).hexdigest()[:8]
@@ -33,6 +35,21 @@ for ln in lines:
         cur["note"] = inline(ln[2:].strip())
     elif ln.startswith("> ") and not cur["items"] and cur["note"] is None:
         cur["note"] = inline(ln[2:].strip())
+
+def render_tables(lines):
+    out, rows = "", []
+    for tb in lines:
+        cells = [c.strip() for c in tb.strip().strip("|").split("|")]
+        if all(set(c) <= set("-: ") for c in cells):
+            continue
+        rows.append(cells)
+    if not rows:
+        return ""
+    out = '<table class="wx">'
+    for i, r in enumerate(rows):
+        tag = "th" if i == 0 else "td"
+        out += "<tr>" + "".join(f"<{tag}>{inline(c)}</{tag}>" for c in r) + "</tr>"
+    return out + "</table>"
 
 sec_html = ""
 for i, s in enumerate(sections):
@@ -45,6 +62,7 @@ for i, s in enumerate(sections):
     sec_html += "</h2>"
     if s["note"]:
         sec_html += f'<p class="note">{s["note"]}</p>'
+    sec_html += render_tables(s.get('tables', []))
     for it in s["items"]:
         sec_html += f'<label class="item"><input type="checkbox" data-k="{it["id"]}" data-sec="{i}"{" data-md=1 checked" if it["done"] else ""}><span>{it["text"]}</span></label>'
     sec_html += "</section>"
@@ -78,7 +96,7 @@ h2{{font-size:16.5px;margin:0 0 8px;color:var(--accent);border-bottom:2px solid 
 .sig{{text-align:center;font-size:16px;font-weight:700;color:var(--accent);padding:18px}}
 footer{{text-align:center;font-size:11.5px;color:var(--foot);padding:18px}}
 .code{{display:inline-block;min-width:30px;margin-right:6px;font-size:12px;color:var(--badgeink);background:var(--badge);border-radius:5px;padding:0 5px;text-align:center}}
-.chlog{{font-size:12px;color:var(--noteink)}}
+.chlog{{font-size:12px;color:var(--noteink)}}.wx{{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0}}.wx th,.wx td{{border:1px solid var(--line);padding:3px 6px;text-align:center}}.wx th{{background:var(--note)}}
 #theme{{position:absolute;top:10px;right:12px;font-size:20px;line-height:1;padding:7px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.2);color:var(--headink);cursor:pointer;-webkit-appearance:none}}
 header h1{{padding-right:56px}}
 @media print{{#theme{{display:none}}header{{position:static}}#bar{{display:none}}.item:has(input:checked) span{{text-decoration:none}}}}
@@ -107,5 +125,9 @@ function show(){{b.textContent=cur()==='dark'?'☀️':'🌙';b.title=cur()==='d
 b.addEventListener('click',()=>{{const n=cur()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);try{{localStorage.setItem('theme-pref',n)}}catch(e){{}}show()}});
 if(mq.addEventListener)mq.addEventListener('change',show);show();}})();
 </script></body></html>"""
+# 网页打码（罗斌 2026-11-15 定）：证件号只在网页输出打码，MD 正本保留完整号码
+MASKS = [("RA******9", "RA******9"), ("1095****/EV", "1095****/EV")]
+for full, masked in MASKS:
+    page = page.replace(full, masked)
 OUT.write_text(page, encoding="utf-8")
 print("WROTE", OUT, len(page), "bytes,", len(sections), "sections,", sum(len(s['items']) for s in sections), "items")
