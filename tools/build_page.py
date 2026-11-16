@@ -1,9 +1,23 @@
 # -*- coding: utf-8 -*-
 import hashlib, html, os, re, pathlib
 
-# MD 正本路径：默认 mini 路径；Mac Pro 等机器用环境变量 CHECKLIST_MD 指向各自正本
-SRC = pathlib.Path(os.environ.get("CHECKLIST_MD") or (
-    pathlib.Path.home() / "龙虾文件夹/总管家专家团/清单/海外物品清单_2026越南香港国内_Robin.md"))
+# MD 正本路径取值顺序：① 环境变量 CHECKLIST_MD（设了就必须存在）→ ② mini 路径（存在才用）→ ③ Mac Pro 路径（存在才用）→ 都没有就报错
+MINI_MD = pathlib.Path.home() / "龙虾文件夹/总管家专家团/清单/海外物品清单_2026越南香港国内_Robin.md"
+MACPRO_MD = pathlib.Path("/Users/robinmacpro2021/龙虾文件夹/越南20261102/出行清单/海外物品清单_2026越南香港国内_Robin.md")
+
+def _pick_src():
+    env = os.environ.get("CHECKLIST_MD")
+    if env:
+        p = pathlib.Path(env)
+        if not p.is_file():
+            raise SystemExit(f"CHECKLIST_MD 指向的文件不存在：{p}")
+        return p
+    for p in (MINI_MD, MACPRO_MD):
+        if p.is_file():
+            return p
+    raise SystemExit("找不到清单 MD 正本：请设环境变量 CHECKLIST_MD，或确认 mini / Mac Pro 的正本路径存在")
+
+SRC = _pick_src()
 OUT = pathlib.Path(__file__).resolve().parent.parent / "index.html"
 md = SRC.read_text(encoding="utf-8")
 
