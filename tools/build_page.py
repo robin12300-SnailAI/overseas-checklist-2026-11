@@ -105,7 +105,7 @@ header h1{{padding-right:56px}}
 @media print{{#theme{{display:none}}header{{position:static}}#bar{{display:none}}.item:has(input:checked) span{{text-decoration:none}}}}
 </style></head><body>
 <header><button id="theme" type="button" aria-label="切换白天/夜间模式" title="切换白天/夜间模式">🌙</button><h1>🧳 海外物品清单 · 越南—香港—中国 13 天</h1>
-<div class="meta">📌 {ver} ｜ 刷新 {vtime}（Sydney）｜ 勾选自动保存在本机 · 改 md 或让文亮改 → 版本号会升级</div>
+<div class="meta">📌 {ver} ｜ 刷新 {vtime}（Sydney）｜ 勾选自动保存在本机 · 改 md 或让文亮改 → 版本号会升级 ｜ <a href="packed.html" style="color:inherit;text-decoration:underline">📦 我带了什么</a></div>
 <div id="bar"><div id="barfill"></div></div></header>
 <main>
 {sec_html}
