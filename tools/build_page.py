@@ -19,6 +19,11 @@ def _pick_src():
 
 SRC = _pick_src()
 OUT = pathlib.Path(__file__).resolve().parent.parent / "index.html"
+# 罗斌 2026-11-20 晚修正：网页日程显示全部日期（完整日历 11/17–11/30），不再按单天过滤
+# （保留 SCHEDULE_DAY 变量仅为兼容旧环境变量，如需隐藏过期日程可设 HIDE_BEFORE=11/20）
+SCHEDULE_DAY = os.environ.get("SCHEDULE_DAY", "")
+HIDE_BEFORE = os.environ.get("HIDE_BEFORE", "")
+DATE_SEC_RE = re.compile(r"^(\d{1,2})/(\d{1,2})（")
 md = SRC.read_text(encoding="utf-8")
 
 # extract version
@@ -33,14 +38,24 @@ def inline(s):
     return s
 
 lines = md.splitlines()
-sections, cur = [], None
+sections, cur, skipping = [], None, False
 for ln in lines:
     if ln.startswith("# "):
         continue
     if ln.startswith("## ") or ln.startswith("### "):
-        cur = {"title": ln.lstrip("#").strip(), "items": [], "note": None}
+        title = ln.lstrip("#").strip()
+        dm = DATE_SEC_RE.match(title)
+        skipping = False
+        if dm and HIDE_BEFORE:
+            cur_date = f"{dm.group(1)}/{dm.group(2)}"
+            if cur_date < HIDE_BEFORE:
+                skipping = True
+        if skipping:
+            cur = None
+            continue
+        cur = {"title": title, "items": [], "note": None}
         sections.append(cur); continue
-    if cur is None: continue
+    if skipping or cur is None: continue
     if ln.startswith("|"):
         cur.setdefault("tables", []).append(ln); continue
     mi = re.match(r"- \[( |x|X)\] (?:\*\*([A-Z]\d+)\*\* )?(.*)", ln)
