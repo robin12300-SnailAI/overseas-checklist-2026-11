@@ -19,10 +19,13 @@ def _pick_src():
 
 SRC = _pick_src()
 OUT = pathlib.Path(__file__).resolve().parent.parent / "index.html"
-# 罗斌 2026-11-20 晚修正：网页日程显示全部日期（完整日历 11/17–11/30），不再按单天过滤
-# （保留 SCHEDULE_DAY 变量仅为兼容旧环境变量，如需隐藏过期日程可设 HIDE_BEFORE=11/20）
-SCHEDULE_DAY = os.environ.get("SCHEDULE_DAY", "")
-HIDE_BEFORE = os.environ.get("HIDE_BEFORE", "")
+# 罗斌 2026-11-20 晚定：网页日历隐藏已过去的日期（早于「今天」的日程区不显示；MD 正本保留全部）
+# 默认取系统当天（每次重建自动前移）；设环境变量 HIDE_BEFORE=11/20 可手动指定；设 HIDE_BEFORE=0 显示全部
+import datetime as _dt
+_today = _dt.date.today()
+HIDE_BEFORE = os.environ.get("HIDE_BEFORE", f"{_today.month}/{_today.day}")
+if HIDE_BEFORE == "0":
+    HIDE_BEFORE = ""
 DATE_SEC_RE = re.compile(r"^(\d{1,2})/(\d{1,2})（")
 md = SRC.read_text(encoding="utf-8")
 
@@ -134,7 +137,7 @@ header h1{{padding-right:56px}}
 @media print{{#theme{{display:none}}header{{position:static}}#bar{{display:none}}.item:has(input:checked) span{{text-decoration:none}}}}
 </style></head><body>
 <header><button id="theme" type="button" aria-label="切换白天/夜间模式" title="切换白天/夜间模式">🌙</button><h1>🧳 海外物品清单 · 越南—香港—中国 13 天</h1>
-<div class="meta">📌 {ver} ｜ 刷新 {vtime}（Sydney）｜ 勾选自动保存在本机 · 改 md 或让文亮改 → 版本号会升级 ｜ <a href="packed.html" style="color:inherit;text-decoration:underline">📦 我带了什么</a></div>
+<div class="meta">📌 {ver} ｜ 刷新 {vtime}（Sydney）｜ 勾选自动保存在本机 · 改 md 或让文亮改 → 版本号会升级 ｜ 日历只显示 {HIDE_BEFORE} 及以后 ｜ <a href="packed.html" style="color:inherit;text-decoration:underline">📦 我带了什么</a></div>
 <div id="bar"><div id="barfill"></div></div></header>
 <main>
 {sec_html}
